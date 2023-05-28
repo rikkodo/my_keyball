@@ -70,14 +70,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //////////////////////////////////////////////////////////////////////////////
 // Types
 
-#define MY_SAFE_RANGE 0x5DB5
+// MY: START Use my safe range
+#define MY_SAFE_RANGE 0x5EA5
 
 #if MY_SAFE_RANGE < SAFE_RANGE
 #error TOO SMALL SAFE_RANGE
 #endif
+// MY: END
 
 enum keyball_keycodes {
+// MY: START Use my safe range
+//    KBC_RST = SAFE_RANGE
     KBC_RST = MY_SAFE_RANGE, // Keyball configuration: reset to default
+// MY: END
     KBC_SAVE,             // Keyball configuration: save to EEPROM
 
     CPI_I100, // CPI +100 CPI
@@ -151,13 +156,10 @@ extern keyball_t keyball;
 //////////////////////////////////////////////////////////////////////////////
 // Public API functions
 
-/// keyball_oled_render_ballinfo renders ball information to OLED.
-/// It uses just 21 columns to show the info.
-void keyball_oled_render_ballinfo(void);
-
-/// keyball_oled_render_keyinfo renders last processed key information to OLED.
-/// It shows column, row, key code, and key name (if available).
-void keyball_oled_render_keyinfo(void);
+// MY: START render confino
+/// my_keyball_oled_render_confinfo renders layer and modifier status
+void my_keyball_oled_render_statfinfo(void);
+// MY: END
 
 /// keyball_get_scroll_mode gets current scroll mode.
 bool keyball_get_scroll_mode(void);

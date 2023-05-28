@@ -93,11 +93,6 @@ static const char *format_4d(int8_t d) {
     return buf;
 }
 
-static char to_1x(uint8_t x) {
-    x &= 0x0f;
-    return x < 10 ? x + '0' : x + 'a' - 10;
-}
-
 static void add_cpi(int8_t delta) {
     int16_t v = keyball_get_cpi() + delta;
     keyball_set_cpi(v < 1 ? 1 : v);
@@ -336,76 +331,66 @@ static void rpc_set_cpi_invoke(void) {
 //////////////////////////////////////////////////////////////////////////////
 // OLED utility
 
+// MY: START Show statinfo
+void my_keyball_oled_render_statfinfo(void) {
 #ifdef OLED_ENABLE
-// clang-format off
-const char PROGMEM code_to_name[] = {
-    'a', 'b', 'c', 'd', 'e', 'f',  'g', 'h', 'i',  'j',
-    'k', 'l', 'm', 'n', 'o', 'p',  'q', 'r', 's',  't',
-    'u', 'v', 'w', 'x', 'y', 'z',  '1', '2', '3',  '4',
-    '5', '6', '7', '8', '9', '0',  'R', 'E', 'B',  'T',
-    '_', '-', '=', '[', ']', '\\', '#', ';', '\'', '`',
-    ',', '.', '/',
-};
-// clang-format on
-#endif
+    uint8_t modifiers = get_mods();
+    led_t led_state = host_keyboard_led_state();
+    const char *n;
 
-void keyball_oled_render_ballinfo(void) {
-#ifdef OLED_ENABLE
-    // Format: `Ball:{mouse x}{mouse y}{mouse h}{mouse v}`
-    //         `    CPI{CPI} S{SCROLL_MODE} D{SCROLL_DIV}`
-    //
-    // Output example:
-    //
-    //     Ball: -12  34   0   0
-    //
-    oled_write_P(PSTR("Ball:"), false);
-    oled_write(format_4d(keyball.last_mouse.x), false);
-    oled_write(format_4d(keyball.last_mouse.y), false);
-    oled_write(format_4d(keyball.last_mouse.h), false);
-    oled_write(format_4d(keyball.last_mouse.v), false);
+    // Layer
+    switch (get_highest_layer(layer_state)) {
+        case 0:
+            n = PSTR("Default");
+            break;
+        case 1:
+            n = PSTR("Fake");
+            break;
+        case 2:
+            n = PSTR("Mouse");
+            break;
+        case 3:
+            n = PSTR("Function");
+            break;
+        default:
+            n = PSTR("Undefined");
+            break;
+    }
+    oled_write_P(n, false);
+    oled_write_P(PSTR(" Layer"), false);
+    oled_advance_page(true);
+
+    // led status
+    oled_write_P(PSTR("Caps"), led_state.caps_lock);
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Num"), led_state.num_lock);
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Scr"), led_state.scroll_lock);
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Cmp"), led_state.compose);
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Kana"), led_state.kana);
+    // oled_advance_page(true);
+
+    // Modifier Info
+    oled_write_P(PSTR("Ctrl"), (modifiers & MOD_MASK_CTRL));
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Shift"), (modifiers & MOD_MASK_SHIFT));
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Opt"), (modifiers & MOD_MASK_ALT));
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Cmd"), (modifiers & MOD_MASK_GUI));
+    oled_advance_page(true);
+
     // CPI
-    oled_write_P(PSTR("     CPI"), false);
+    oled_write_P(keyball.scroll_mode ? PSTR("Scroll") : PSTR("Cursor"), false);
+    oled_write_P(PSTR(" "), false);
     oled_write(format_4d(keyball_get_cpi()) + 1, false);
-    oled_write_P(PSTR("00  S"), false);
-    oled_write_char(keyball.scroll_mode ? '1' : '0', false);
-    oled_write_P(PSTR("  D"), false);
+    oled_write_P(PSTR("cpi/div"), false);
     oled_write_char('0' + keyball_get_scroll_div(), false);
 #endif
 }
-
-void keyball_oled_render_keyinfo(void) {
-#ifdef OLED_ENABLE
-    // Format: `Key :  R{row}  C{col} K{kc}  '{name}`
-    //
-    // Where `kc` is lower 8 bit of keycode.
-    // Where `name` is readable label for `kc`, valid between 4 and 56.
-    //
-    // It is aligned to fit with output of keyball_oled_render_ballinfo().
-    // For example:
-    //
-    //     Key :  R2  C3 K06  'c
-    //     Ball:   0   0   0   0
-    //
-    uint8_t keycode = keyball.last_kc;
-
-    oled_write_P(PSTR("Key :  R"), false);
-    oled_write_char(to_1x(keyball.last_pos.row), false);
-    oled_write_P(PSTR("  C"), false);
-    oled_write_char(to_1x(keyball.last_pos.col), false);
-    if (keycode) {
-        oled_write_P(PSTR(" K"), false);
-        oled_write_char(to_1x(keycode >> 4), false);
-        oled_write_char(to_1x(keycode), false);
-    }
-    if (keycode >= 4 && keycode < 57) {
-        oled_write_P(PSTR("  '"), false);
-        char name = pgm_read_byte(code_to_name + keycode - 4);
-        oled_write_char(name, false);
-    } else {
-        oled_advance_page(true);
-    }
-#endif
-}
+// MY: END
 
 //////////////////////////////////////////////////////////////////////////////
 // Public API functions
@@ -514,7 +499,13 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 
     // process events which works on pressed only.
     if (record->event.pressed) {
-        switch (keycode) {
+
+            int rev = (keyboard_report->mods & MOD_BIT(KC_LSFT)) ||
+                              (keyboard_report->mods & MOD_BIT(KC_RSFT))
+                          ? -1
+                          : 1;
+            switch (keycode)
+            {
             case KBC_RST:
                 keyball_set_cpi(0);
                 keyball_set_scroll_div(0);
@@ -528,26 +519,26 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
             } break;
 
             case CPI_I100:
-                add_cpi(1);
+                add_cpi(1 * rev);
                 break;
             case CPI_D100:
-                add_cpi(-1);
+                add_cpi(-1 * rev);
                 break;
             case CPI_I1K:
-                add_cpi(10);
+                add_cpi(10 * rev);
                 break;
             case CPI_D1K:
-                add_cpi(-10);
+                add_cpi(-10 * rev);
                 break;
 
             case SCRL_TO:
                 keyball_set_scroll_mode(!keyball.scroll_mode);
                 break;
             case SCRL_DVI:
-                add_scroll_div(1);
+                add_scroll_div(1 * rev);
                 break;
             case SCRL_DVD:
-                add_scroll_div(-1);
+                add_scroll_div(-1 * rev);
                 break;
 
             default:

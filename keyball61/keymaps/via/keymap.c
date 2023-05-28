@@ -67,7 +67,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 #    include "lib/oledkit/oledkit.h"
 
 void oledkit_render_info_user(void) {
-    keyball_oled_render_keyinfo();
-    keyball_oled_render_ballinfo();
+// MY: START
+    my_keyball_oled_render_statfinfo();
+// MY: END
 }
 #endif
