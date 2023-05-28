@@ -383,7 +383,7 @@ void my_keyball_oled_render_statfinfo(void) {
     oled_advance_page(true);
 
     // CPI
-    oled_write_P(keyball.scroll_mode ? PSTR("Scroll") : PSTR("Cursor"), false);
+    oled_write_P(keyball.scroll_mode ? PSTR("Scroll") : PSTR("Cursor"), keyball.scroll_mode);
     oled_write_P(PSTR(" "), false);
     oled_write(format_4d(keyball_get_cpi()) + 1, false);
     oled_write_P(PSTR("cpi/div"), false);
