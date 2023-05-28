@@ -339,7 +339,7 @@ void my_keyball_oled_render_statfinfo(void) {
     const char *n;
 
     // Layer
-    switch (get_highest_layer(layer_state)) {
+    switch (get_highest_layer(layer_state | default_layer_state)) {
         case 0:
             n = PSTR("Default");
             break;
