@@ -8,13 +8,9 @@ keyball61の自分用ファームウェア
 
 * Keyboard Quantizerに繋ぐと両方スレーブになってしまうので`MASTER_LEFT`にしてしまう。
 * `SAFE_RANGE`がずれていたので、オレオレセーフレンジに書き換え。
-  * 0x5DBAを起点とする。
-
-## TODO
-
-というかやりたいけど放置していること。
-
-* LCDにレイヤ情報、モディファイアキー情報を表示するようにする。 (銀弾イメージ）
+  * 0x5EA5を起点とする。
+* LCDにレイヤ情報、モディファイアキー情報を表示する。
+* CPI/Scroll除数変更をShiftキー同時押しで反転できるように変更。
 
 ## 参照
 
@@ -36,7 +32,7 @@ This directory includes source code of Keyball keyboard seriers:
 |[ONE47](./one47)|A keyboard with 47 vertically keys and 34mm trackball. It will support BLE Micro Pro.
 |[Keyball44](./keyball44)|A split keyboard with 44 vertically staggered keys and 34mm track ball.
 
-* Keyboard Designer: [@Yowkees](https://twitter.com/Yowkees)  
+* Keyboard Designer: [@Yowkees](https://twitter.com/Yowkees)
 * Hardware Supported: ProMicro like footprint
 * Hardware Availability: <https://shirogane-lab.com/>
 
@@ -47,13 +43,13 @@ See each directories for each keyboards in a table above.
 1. Check out this repository.
 
     ```console
-    $ git clone https://github.com/Yowkees/keyball.git keyball
+    git clone https://github.com/Yowkees/keyball.git keyball
     ```
 
 2. Check out [qmk/qmk_firmware](https://github.com/qmk/qmk_firmware/) repository in another place.
 
     ```console
-    $ git clone https://github.com/qmk/qmk_firmware.git --depth 1 --recurse-submodules --shallow-submodules -b 0.15.13 qmk
+    git clone https://github.com/qmk/qmk_firmware.git --depth 1 --recurse-submodules --shallow-submodules -b 0.15.13 qmk
     ```
 
     Currently Keyball firmwares are verified to compile with QMK 0.16.13
@@ -74,10 +70,9 @@ See each directories for each keyboards in a table above.
 4. `make` your Keyball firmwares.
 
     ```console
-    $ make -j8 SKIP_GIT=yes keyball/keyball61:default
+    make -j8 SKIP_GIT=yes keyball/keyball61:default
     ```
 
 ## How to create your keymap
 
 (to be documented)
-
