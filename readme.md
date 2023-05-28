@@ -22,6 +22,10 @@ keyball61の自分用ファームウェア
 
 ## original below
 
+<https://github.com/Yowkees/keyball>
+
+<https://github.com/Yowkees/keyball/tree/main/qmk_firmware/keyboards/keyball>
+
 This directory includes source code of Keyball keyboard seriers:
 
 | Name          | Description
