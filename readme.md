@@ -23,3 +23,9 @@ keyball61の自分用ファームウェア
 <https://github.com/Yowkees/keyball>
 
 <https://github.com/Yowkees/keyball/tree/main/qmk_firmware/keyboards/keyball>
+
+## ビルド方法
+
+1. qmk環境を構築する
+2. <qmk\_firmware>/keyboardsにシンボリックリンクを貼る
+3. <qmk\_firmware> 下で `make keyball/keyball61:via`
