@@ -26,6 +26,6 @@ keyball61の自分用ファームウェア
 
 ## ビルド方法
 
-1. qmk環境を構築する
+1. qmk**18**環境を構築する
 2. <qmk\_firmware>/keyboardsにシンボリックリンクを貼る
 3. <qmk\_firmware> 下で `make keyball/keyball61:via`
